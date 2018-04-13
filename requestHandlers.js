@@ -34,12 +34,19 @@ function upload(response, request) {
 
     /* Possible error on Windows systems:
        Tried to rename to an already existing file */
+    fs.rename(files.upload.path, "/tmp/test.png", function(error) {
+      if (error) {
+        fs.unlink("/tmp/test.png");
+        fs.rename(files.upload.path, "/tmp/test.png");
+      }
+    });
+    response.writeHead(200, {"Content-Type": "text/html"});
+    response.write("received image: <br/>");
+    response.write("<img src='/show' />")
+    reponse.end();
+
   })
 
-  response.writeHead(200, {"Content-Type": "text/plain"});
-  response.write("You've sent the text: " + 
-  querystring.parse(postData).text);
-  reponse.end();
 }
 
 function show(response) {
